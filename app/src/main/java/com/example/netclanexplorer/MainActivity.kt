@@ -61,8 +61,12 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       NetclanExplorerTheme {
-        CustomTopAppBar()
-        ViewPagerPreview()
+        Scaffold { padding ->
+          Column(modifier = Modifier.padding(vertical = padding.calculateTopPadding())) {
+            TopAppBar()
+            ViewPagerPreview()
+          }
+        }
       }
     }
   }
@@ -70,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun CustomTopAppBar() {
+fun TopAppBar() {
   TopAppBar(
     modifier = Modifier.fillMaxWidth(),
     backgroundColor = Color.Blue,
@@ -78,8 +82,8 @@ fun CustomTopAppBar() {
   ) {
     Row(
       modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = 4.dp),
+          .fillMaxWidth()
+          .padding(bottom = 4.dp),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Start
     ) {
@@ -143,11 +147,7 @@ fun CustomTopAppBar() {
 
 @Composable
 fun ViewPagerPreview() {
-  MaterialTheme {
-    Surface(color = Color.Magenta, tonalElevation = 2.dp) {
-      ViewPagerSample()
-    }
-  }
+  ViewPagerSample()
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -156,7 +156,7 @@ fun ViewPagerSample() {
   val pagerState = rememberPagerState(
     pageCount = { 3 } // Number of pages
   )
-  Column {
+  Column() {
     // Page Indicator
     PagerIndicator(pagerState)
 
@@ -193,15 +193,15 @@ fun PagerIndicator(
   TabRow(
     selectedTabIndex = pagerState.currentPage,
     modifier = Modifier
-      .fillMaxWidth()
-      .padding(vertical = 0.dp),
+        .fillMaxWidth()
+        .padding(vertical = 0.dp),
     containerColor = Color.Black,
     indicator = { tabPositions ->
       Box(
-        Modifier
-          .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-          .height(3.dp)
-          .background(Color.White) // Your desired color
+          Modifier
+              .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+              .height(3.dp)
+              .background(Color.White) // Your desired color
       )
     }
   ) {
