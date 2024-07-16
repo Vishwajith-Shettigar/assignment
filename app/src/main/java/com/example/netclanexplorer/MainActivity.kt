@@ -1,14 +1,17 @@
 package com.example.netclanexplorer
 
 import android.graphics.drawable.Icon
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,23 +39,30 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.HorizontalAlignmentLine
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-
 
 class MainActivity : ComponentActivity() {
 
@@ -88,9 +98,9 @@ fun TopAppBar() {
       horizontalArrangement = Arrangement.Start
     ) {
       // Left icon
-      IconButton(onClick = { /* Do something */ }) {
+      IconButton(onClick = { }) {
         Icon(
-          imageVector = Icons.Filled.Menu, // Replace with your desired icon
+          imageVector = Icons.Filled.Menu,
           contentDescription = "Menu",
           tint = Color.White,
         )
@@ -109,7 +119,7 @@ fun TopAppBar() {
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
           Icon(
-            imageVector = Icons.Filled.LocationOn, // Replace with your desired icon
+            imageVector = Icons.Filled.LocationOn,
             contentDescription = "Menu",
             tint = Color.White,
           )
@@ -123,13 +133,14 @@ fun TopAppBar() {
 
       Spacer(modifier = Modifier.weight(1f))
 
+      // Right icon
       Column(horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(
-          onClick = { /* Do something */ },
+          onClick = { },
           modifier = Modifier.size(29.dp)
         ) {
           Icon(
-            imageVector = Icons.Default.Check, // Replace with your desired icon
+            imageVector = Icons.Default.Check,
             contentDescription = "Refine",
             tint = Color.White
 
@@ -154,26 +165,101 @@ fun ViewPagerPreview() {
 @Composable
 fun ViewPagerSample() {
   val pagerState = rememberPagerState(
-    pageCount = { 3 } // Number of pages
+    pageCount = { 3 }
   )
-  Column() {
+  Column {
     // Page Indicator
     PagerIndicator(pagerState)
-
     HorizontalPager(
       state = pagerState,
-      modifier = Modifier.weight(1f)
+      modifier = Modifier
+          .weight(1f)
+          .background(Color.Cyan)
     ) { page ->
-      // Content for each page
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+      Column(modifier = Modifier.fillMaxSize()) {
+        SearchBar()
+        ShowUserProfileList()
+      }
+    }
+  }
+}
+
+@Composable
+fun ShowUserProfileList() {
+}
+
+@Preview(showBackground = true)
+@Composable
+fun UserProfileCard(
+  name: String = "Vishwajith",
+  location: String = "Udupi",
+  distance: String = "7.7",
+  profileScore: Int = 19,
+  interests: List<String> = listOf("Coffee", "Business", "Friendship"),
+  message: String = "Hi community ! i am open to new connections"
+) {
+  Card(
+    elevation = 4.dp,
+    shape = RoundedCornerShape(8.dp),
+    backgroundColor = Color.LightGray
+  ) {
+    Column(
+      modifier = Modifier
+          .padding(16.dp)
+          .fillMaxWidth()
+    ) {
+      Row(
+        horizontalArrangement = Arrangement.SpaceBetween
       ) {
-        BasicText(
-          text = "Page $page",
-          style = MaterialTheme.typography.headlineLarge
+        Box(
+          modifier = Modifier
+              .size(32.dp)
+              .background(Color.Gray, RoundedCornerShape(8.dp))
+              .align(Alignment.Top)
+        ) {
+          Text(
+            text = "NP",
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxSize()
+          )
+        }
+        Text(
+          text = "+ INVITE",
+          color = Color.Blue,
+          style = MaterialTheme.typography.bodySmall
         )
       }
+
+      Text(
+        text = "$name | $location",
+        style = MaterialTheme.typography.bodySmall
+      )
+
+      Text(
+        text = "Within $distance",
+        style = MaterialTheme.typography.bodySmall
+      )
+
+      LinearProgressIndicator(
+        progress = profileScore.toFloat() / 100,
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.Gray
+      )
+
+      Text(
+        text = "Profile Score - $profileScore%",
+        style = MaterialTheme.typography.bodyMedium
+      )
+
+      Row {
+        // ... Interest icons with labels
+      }
+
+      Text(
+        text = message,
+        style = MaterialTheme.typography.bodyMedium
+      )
     }
   }
 }
@@ -218,6 +304,63 @@ fun PagerIndicator(
         selectedContentColor = Color.White,
         unselectedContentColor = Color.Gray
       )
+    }
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchBar(modifier: Modifier = Modifier) {
+  val shape = RoundedCornerShape(10.dp)
+  var text by rememberSaveable {
+    mutableStateOf("")
+  }
+  Surface(
+    modifier = Modifier
+        .height(80.dp)
+        .fillMaxWidth(), color = Color.White
+  ) {
+    Row(
+      modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 10.dp),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      OutlinedTextField(
+        value = text,
+        onValueChange = {
+          text = it
+        },
+        shape = shape,
+        leadingIcon = {
+          Icon(imageVector = Icons.Default.Search, contentDescription = null)
+        },
+        placeholder = {
+          Text(
+            "Search",
+            color = Color.Gray,
+            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+          ) // Placeholder for hint
+        },
+        textStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(44.dp)
+            .padding(horizontal = 4.dp)
+            .weight(6f)
+      )
+
+      IconButton(
+        onClick = { },
+        modifier = Modifier
+            .size(29.dp)
+            .weight(1f)
+      ) {
+        Icon(
+          imageVector = Icons.Default.Menu, // Replace with your desired icon
+          contentDescription = "Refine",
+        )
+      }
     }
   }
 }
