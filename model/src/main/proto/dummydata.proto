@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.example.model";
+option java_multiple_files = true;
+
+message Dummydata{
+  int32 id = 1;
+  string full_name = 2;
+  string image_url = 3;
+  string place_and_occupation = 4;
+  string message = 5;
+  float distance = 6;
+  HobbyList hobby_list = 7;
+}
+
+message HobbyList{
+  repeated string hoby = 1;
+}
