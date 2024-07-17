@@ -100,14 +100,14 @@ class MainActivity : ComponentActivity() {
         ) { padding ->
           Column(
             modifier = Modifier
-              .padding(padding)
-              .fillMaxSize()
+                .padding(padding)
+                .fillMaxSize()
           ) {
             TopAppBar()
             ViewPagerSample(
               modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
+                  .weight(1f)
+                  .fillMaxSize()
             )
           }
 
@@ -126,8 +126,8 @@ class MainActivity : ComponentActivity() {
     ) {
       Row(
         modifier = Modifier
-          .fillMaxWidth()
-          .padding(bottom = 4.dp),
+            .fillMaxWidth()
+            .padding(bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
       ) {
@@ -240,11 +240,12 @@ class MainActivity : ComponentActivity() {
     Box(
       modifier = Modifier.padding(start = 15.dp, end = 10.dp)
     ) {
-      Card(
+      Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp, start = 25.dp),
-        elevation = 4.dp
+            .background(Color.White)
+            .padding(top = 24.dp, start = 25.dp)
+            .border(1.dp, Color.LightGray, shape = RoundedCornerShape(10.dp))
       ) {
         Column(
           modifier = Modifier
@@ -444,7 +445,7 @@ class MainActivity : ComponentActivity() {
     Surface(
       modifier = Modifier
 
-          .fillMaxWidth(), color = Color.White
+        .fillMaxWidth(), color = Color.White
     ) {
       Row(
         modifier = Modifier
