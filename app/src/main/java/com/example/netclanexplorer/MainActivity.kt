@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.util.Log
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
@@ -49,6 +53,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -56,11 +61,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
@@ -143,7 +152,6 @@ fun TopAppBar() {
             imageVector = Icons.Default.Check,
             contentDescription = "Refine",
             tint = Color.White
-
           )
         }
         Text(
@@ -186,82 +194,152 @@ fun ViewPagerSample() {
 
 @Composable
 fun ShowUserProfileList() {
+  LazyColumn() {
+    items(3) {
+      ProfileCard()
+      Spacer(modifier = Modifier.height(10.dp))
+    }
+  }
+}
+
+@Composable
+fun ProfileCard() {
+  Box(
+    modifier = Modifier.padding(start = 15.dp, end = 10.dp)
+  ) {
+    Card(
+      modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 24.dp, start = 25.dp),
+      elevation = 4.dp
+    ) {
+      Column(
+        modifier = Modifier
+          .padding(16.dp)
+      ) {
+        Row(
+          verticalAlignment = Alignment.Top,
+          horizontalArrangement = Arrangement.SpaceBetween,
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Spacer(modifier = Modifier.width(44.dp))
+          Column {
+            Text(
+              text = "Nikshith Poojary",
+              fontWeight = FontWeight.Bold,
+              fontSize = 18.sp
+            )
+            Text(
+              text = "Udupi | IT",
+              color = Color.Gray
+            )
+            Text(
+              text = "Within 7.7 KM",
+              color = Color.Gray
+            )
+          }
+          Spacer(modifier = Modifier.weight(1f))
+          Text(
+            text = "+ INVITE",
+            color = Color.Blue,
+            fontWeight = FontWeight.Bold
+          )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.Start
+        ) {
+          Spacer(modifier = Modifier.width(44.dp))
+          LinearProgressIndicator(
+            progress = 0.18f,
+            color = Color(0xFF6200EE),
+            backgroundColor = Color(0xFFBB86FC),
+            modifier = Modifier.width(80.dp)
+          )
+          Text(
+            text = "Profile Score - 18%",
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 10.dp),
+            style = MaterialTheme.typography.bodySmall
+          )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+          horizontalArrangement = Arrangement.Start,
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          TextWithIcon(text = "Coffee")
+          VerticalDivider()
+          TextWithIcon(text = "Business")
+          VerticalDivider()
+          TextWithIcon(text = "Friendship")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+          text = "Hi community! I am open to new connections \"🙂\"",
+          fontSize = 16.sp, modifier = Modifier.padding(start = 5.dp)
+        )
+      }
+    }
+    Box(
+      modifier = Modifier
+          .size(78.dp)
+          .offset(x = -10.dp, y = (10).dp)
+          .background(Color.Gray, RoundedCornerShape(6.dp)),
+      contentAlignment = Alignment.Center,
+    ) {
+      Text(
+        text = "NP",
+        color = Color.Black,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold
+      )
+    }
+  }
+}
+
+@Composable
+fun VerticalDivider() {
+  Box(
+    modifier = Modifier
+        .height(14.dp)
+        .width(1.dp)
+        .background(Color.Gray)
+  )
+}
+
+@Composable
+fun TextWithIcon(text: String) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.padding(end = 5.dp, start = 5.dp)
+  ) {
+    IconButton(
+      onClick = { },
+      modifier = Modifier
+        .size(10.dp)
+    ) {
+      Icon(
+        imageVector = Icons.Default.ShoppingCart,
+        contentDescription = "Refine",
+      )
+    }
+    Spacer(modifier = Modifier.width(4.dp))
+    Text(
+      text = text, style = MaterialTheme.typography.bodySmall
+    )
+  }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun UserProfileCard(
-  name: String = "Vishwajith",
-  location: String = "Udupi",
-  distance: String = "7.7",
-  profileScore: Int = 19,
-  interests: List<String> = listOf("Coffee", "Business", "Friendship"),
-  message: String = "Hi community ! i am open to new connections"
-) {
-  Card(
-    elevation = 4.dp,
-    shape = RoundedCornerShape(8.dp),
-    backgroundColor = Color.LightGray
-  ) {
-    Column(
-      modifier = Modifier
-          .padding(16.dp)
-          .fillMaxWidth()
-    ) {
-      Row(
-        horizontalArrangement = Arrangement.SpaceBetween
-      ) {
-        Box(
-          modifier = Modifier
-              .size(32.dp)
-              .background(Color.Gray, RoundedCornerShape(8.dp))
-              .align(Alignment.Top)
-        ) {
-          Text(
-            text = "NP",
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxSize()
-          )
-        }
-        Text(
-          text = "+ INVITE",
-          color = Color.Blue,
-          style = MaterialTheme.typography.bodySmall
-        )
-      }
-
-      Text(
-        text = "$name | $location",
-        style = MaterialTheme.typography.bodySmall
-      )
-
-      Text(
-        text = "Within $distance",
-        style = MaterialTheme.typography.bodySmall
-      )
-
-      LinearProgressIndicator(
-        progress = profileScore.toFloat() / 100,
-        modifier = Modifier.fillMaxWidth(),
-        color = Color.Gray
-      )
-
-      Text(
-        text = "Profile Score - $profileScore%",
-        style = MaterialTheme.typography.bodyMedium
-      )
-
-      Row {
-        // ... Interest icons with labels
-      }
-
-      Text(
-        text = message,
-        style = MaterialTheme.typography.bodyMedium
-      )
-    }
-  }
+fun ProfileCardPreview() {
+  ProfileCard()
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -269,7 +347,7 @@ fun UserProfileCard(
 @Composable
 fun PagerIndicator(
   pagerState: PagerState = rememberPagerState(
-    pageCount = { 3 } // Number of pages
+    pageCount = { 3 }
   )
 ) {
   val coroutineScope = rememberCoroutineScope()
@@ -287,7 +365,7 @@ fun PagerIndicator(
           Modifier
               .tabIndicatorOffset(tabPositions[pagerState.currentPage])
               .height(3.dp)
-              .background(Color.White) // Your desired color
+              .background(Color.White)
       )
     }
   ) {
@@ -340,7 +418,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
             "Search",
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
-          ) // Placeholder for hint
+          )
         },
         textStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
         modifier = modifier
@@ -357,7 +435,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
             .weight(1f)
       ) {
         Icon(
-          imageVector = Icons.Default.Menu, // Replace with your desired icon
+          imageVector = Icons.Default.Menu,
           contentDescription = "Refine",
         )
       }
