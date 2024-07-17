@@ -44,6 +44,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.TopAppBar
@@ -71,11 +73,13 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -91,7 +95,7 @@ class MainActivity : ComponentActivity() {
 
         Scaffold(
           bottomBar = {
-            BottomNavigation()
+            BottomNavigationBar()
           }
         ) { padding ->
           Column(
@@ -130,7 +134,7 @@ class MainActivity : ComponentActivity() {
         // Left icon
         IconButton(onClick = { }) {
           Icon(
-            imageVector = Icons.Filled.Menu,
+            painter = painterResource(R.drawable.round_notes_24),
             contentDescription = "Menu",
             tint = Color.White,
           )
@@ -170,7 +174,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.size(29.dp)
           ) {
             Icon(
-              imageVector = Icons.Default.Check,
+              painter = painterResource(R.drawable.outline_checklist_24),
               contentDescription = "Refine",
               tint = Color.White
             )
@@ -199,18 +203,22 @@ class MainActivity : ComponentActivity() {
     Box(modifier = modifier) {
 //
 
-      Column() {
+      Column {
         // Page Indicator
         PagerIndicator(pagerState)
         HorizontalPager(
           state = pagerState,
           modifier = Modifier
-            .weight(1f)
-            .background(Color.Cyan)
+              .weight(1f)
+              .background(Color.White)
         ) { page ->
           Column(modifier = Modifier.fillMaxSize()) {
             SearchBar()
-            ShowUserProfileList()
+            when (page) {
+              0 -> {
+                ShowUserProfileList()
+              }
+            }
           }
         }
       }
@@ -234,8 +242,8 @@ class MainActivity : ComponentActivity() {
     ) {
       Card(
         modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = 24.dp, start = 25.dp),
+            .fillMaxWidth()
+            .padding(top = 24.dp, start = 25.dp),
         elevation = 4.dp
       ) {
         Column(
@@ -298,11 +306,11 @@ class MainActivity : ComponentActivity() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
           ) {
-            TextWithIcon(text = "Coffee")
+            TextWithIcon(text = "Coffee", 0)
             VerticalDivider()
-            TextWithIcon(text = "Business")
+            TextWithIcon(text = "Business", 1)
             VerticalDivider()
-            TextWithIcon(text = "Friendship")
+            TextWithIcon(text = "Friendship", 2)
           }
           Spacer(modifier = Modifier.height(16.dp))
           Text(
@@ -313,9 +321,9 @@ class MainActivity : ComponentActivity() {
       }
       Box(
         modifier = Modifier
-          .size(88.dp)
-          .offset(x = -10.dp, y = (10).dp)
-          .background(Color.Gray, RoundedCornerShape(10.dp)),
+            .size(88.dp)
+            .offset(x = -10.dp, y = (10).dp)
+            .background(Color.Gray, RoundedCornerShape(10.dp)),
         contentAlignment = Alignment.Center,
       ) {
         Text(
@@ -339,7 +347,23 @@ class MainActivity : ComponentActivity() {
   }
 
   @Composable
-  fun TextWithIcon(text: String) {
+  fun TextWithIcon(text: String, id: Int) {
+    var paintDrawable = painterResource(id = R.drawable.baseline_coffee_24)
+
+    when (id) {
+      0 -> {
+        paintDrawable = painterResource(id = R.drawable.baseline_coffee_24)
+      }
+
+      1 -> {
+        paintDrawable = painterResource(id = R.drawable.baseline_business_center_24)
+      }
+
+      2 -> {
+        paintDrawable = painterResource(id = R.drawable.baseline_people_outline_24)
+      }
+    }
+
     Row(
       verticalAlignment = Alignment.CenterVertically,
       modifier = Modifier.padding(end = 5.dp, start = 5.dp)
@@ -350,7 +374,7 @@ class MainActivity : ComponentActivity() {
           .size(10.dp)
       ) {
         Icon(
-          imageVector = Icons.Default.ShoppingCart,
+          painter = paintDrawable,
           contentDescription = "Refine",
         )
       }
@@ -399,7 +423,6 @@ class MainActivity : ComponentActivity() {
           text = { Text(title) },
           selected = pagerState.currentPage == index,
           onClick = {
-            Toast.makeText(context, "Clicked!", Toast.LENGTH_SHORT).show()
             coroutineScope.launch {
               pagerState.animateScrollToPage(index)
             }
@@ -420,13 +443,13 @@ class MainActivity : ComponentActivity() {
     }
     Surface(
       modifier = Modifier
-          .height(80.dp)
+
           .fillMaxWidth(), color = Color.White
     ) {
       Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp),
+            .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 3.dp),
         verticalAlignment = Alignment.CenterVertically
       ) {
         OutlinedTextField(
@@ -460,7 +483,7 @@ class MainActivity : ComponentActivity() {
               .weight(1f)
         ) {
           Icon(
-            imageVector = Icons.Default.Menu,
+            painter = painterResource(id = R.drawable.baseline_tune_24),
             contentDescription = "Refine",
           )
         }
@@ -470,109 +493,39 @@ class MainActivity : ComponentActivity() {
 
   @Preview
   @Composable
-  fun BottomNavigation(modifier: Modifier = Modifier) {
-    NavigationBar(
-modifier=Modifier.height(100.dp), containerColor = Color.White
-    ) {
-      NavigationBarItem(
-        icon = {
-          Icon(
-            imageVector = Icons.Filled.Home,
-            contentDescription = null,
-          )
-        },
-        label = {
-          Text("Explore")
-        },
-        selected = true,
-        onClick = {},
-        colors = NavigationBarItemDefaults.colors(
-          selectedIconColor = Color.Black,
-          selectedTextColor = Color.Black,
-          unselectedIconColor = Color.Gray,
-          unselectedTextColor = Color.Gray,
-          indicatorColor = Color.Transparent
+  fun BottomNavigationBar() {
+    var selectedItem by remember { mutableStateOf(0) }
+
+    val items = listOf("Explore", "Connection", "Chat", "Contacts", "Groups")
+    val icons = listOf(
+      painterResource(id = R.drawable.explore_icon),
+      painterResource(id = R.drawable.baseline_people_outline_24),
+      painterResource(id = R.drawable.rounded_chat_24),
+      painterResource(id = R.drawable.baseline_perm_contact_calendar_24),
+      painterResource(id = R.drawable.baseline_tag_24),
+    )
+
+    BottomNavigation(backgroundColor = Color.White, modifier = Modifier.height(100.dp)) {
+      items.forEachIndexed { index, item ->
+        BottomNavigationItem(
+          icon = {
+            Icon(
+              painter = icons[index],
+              contentDescription = item,
+              tint = if (selectedItem == index) Color.Black else Color.Gray
+            )
+          },
+          label = {
+            Text(
+              text = item,
+              color = if (selectedItem == index) Color.Black else Color.Gray,
+              fontSize = 10.sp
+            )
+          },
+          selected = selectedItem == index,
+          onClick = { selectedItem = index }
         )
-      )
-      NavigationBarItem(
-        icon = {
-          Icon(
-            imageVector = Icons.Default.Person,
-            contentDescription = null
-          )
-        },
-        label = {
-          Text("Connect..")
-        },
-        selected = false,
-        onClick = {},
-        colors = NavigationBarItemDefaults.colors(
-          selectedIconColor = Color.Black,
-          selectedTextColor = Color.Black,
-          unselectedIconColor = Color.Gray,
-          unselectedTextColor = Color.Gray,
-          indicatorColor = Color.Transparent
-        )
-      )
-      NavigationBarItem(
-        icon = {
-          Icon(
-            imageVector = Icons.Filled.Call,
-            contentDescription = null
-          )
-        },
-        label = {
-          Text("Chat")
-        },
-        selected = false,
-        onClick = {},
-        colors = NavigationBarItemDefaults.colors(
-          selectedIconColor = Color.Black,
-          selectedTextColor = Color.Black,
-          unselectedIconColor = Color.Gray,
-          unselectedTextColor = Color.Gray,
-          indicatorColor = Color.Transparent
-        )
-      )
-      NavigationBarItem(
-        icon = {
-          Icon(
-            imageVector = Icons.Default.AccountBox,
-            contentDescription = null
-          )
-        },
-        label = {
-          Text("Contacts")
-        },
-        selected = false,
-        onClick = {},
-        colors = NavigationBarItemDefaults.colors(
-          selectedIconColor = Color.Black,
-          selectedTextColor = Color.Black,
-          unselectedIconColor = Color.Gray,
-          unselectedTextColor = Color.Gray,
-          indicatorColor = Color.Transparent
-        )
-      )
-      NavigationBarItem(
-        icon = {
-          Icon(
-            imageVector = Icons.Default.Face,
-            contentDescription = null
-          )
-        },
-        label = {
-          Text("Groups")
-        },
-        selected = false,
-        onClick = {},
-        colors = NavigationBarItemDefaults.colors(
-          selectedIconColor = Color.Black,
-          selectedTextColor = Color.Black,
-          unselectedIconColor = Color.Gray,
-          unselectedTextColor = Color.Gray,
-          indicatorColor = Color.Transparent
-        )
-      )
+      }
     }
-  }}
+  }
+}
