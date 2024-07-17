@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -41,7 +42,9 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
@@ -51,6 +54,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Face
@@ -62,6 +66,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -71,14 +76,18 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -91,11 +100,25 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       NetclanExplorerTheme {
+        val listState = rememberLazyListState()
+        // To controll to visibility of floating action button.
+        var isFabVisible by remember { mutableStateOf(true) }
 
+        LaunchedEffect(listState) {
+          snapshotFlow { listState.firstVisibleItemIndex }
+            .collect { index ->
+              isFabVisible = index == 0
+            }
+        }
 
         Scaffold(
           bottomBar = {
             BottomNavigationBar()
+          },
+          floatingActionButton = {
+            AnimatedVisibility(visible = isFabVisible) {
+              FloatingActionBtn()
+            }
           }
         ) { padding ->
           Column(
@@ -107,7 +130,8 @@ class MainActivity : ComponentActivity() {
             ViewPagerSample(
               modifier = Modifier
                   .weight(1f)
-                  .fillMaxSize()
+                  .fillMaxSize(),
+              listState
             )
           }
 
@@ -121,7 +145,7 @@ class MainActivity : ComponentActivity() {
   fun TopAppBar() {
     TopAppBar(
       modifier = Modifier.fillMaxWidth(),
-      backgroundColor = Color.Blue,
+      backgroundColor = colorResource(id = R.color.app_bar_background_color),
       contentColor = Color.White,
     ) {
       Row(
@@ -189,20 +213,13 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  @Composable
-  fun ViewPagerPreview() {
-    ViewPagerSample()
-  }
-
   @OptIn(ExperimentalFoundationApi::class)
   @Composable
-  fun ViewPagerSample(modifier: Modifier = Modifier) {
+  fun ViewPagerSample(modifier: Modifier = Modifier, listState: LazyListState) {
     val pagerState = rememberPagerState(
       pageCount = { 3 }
     )
     Box(modifier = modifier) {
-//
-
       Column {
         // Page Indicator
         PagerIndicator(pagerState)
@@ -216,7 +233,7 @@ class MainActivity : ComponentActivity() {
             SearchBar()
             when (page) {
               0 -> {
-                ShowUserProfileList()
+                ShowUserProfileList(listState)
               }
             }
           }
@@ -226,8 +243,10 @@ class MainActivity : ComponentActivity() {
   }
 
   @Composable
-  fun ShowUserProfileList() {
-    LazyColumn() {
+  fun ShowUserProfileList(listState: LazyListState) {
+    LazyColumn(
+      state = listState
+    ) {
       items(3) {
         ProfileCard()
         Spacer(modifier = Modifier.height(10.dp))
@@ -261,7 +280,8 @@ class MainActivity : ComponentActivity() {
               Text(
                 text = "Nikshith Poojary",
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = Color.Black
               )
               Text(
                 text = "Udupi | IT",
@@ -275,7 +295,7 @@ class MainActivity : ComponentActivity() {
             Spacer(modifier = Modifier.weight(1f))
             Text(
               text = "+ INVITE",
-              color = Color.Blue,
+              color = Color.Black,
               fontWeight = FontWeight.Bold
             )
           }
@@ -288,9 +308,11 @@ class MainActivity : ComponentActivity() {
             Spacer(modifier = Modifier.width(44.dp))
             LinearProgressIndicator(
               progress = 0.18f,
-              color = Color(0xFF6200EE),
-              backgroundColor = Color(0xFFBB86FC),
-              modifier = Modifier.width(80.dp)
+              color = Color.Gray,
+              modifier = Modifier
+                  .width(80.dp)
+                  .height(5.dp)
+                  .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
             )
             Text(
               text = "Profile Score - 18%",
@@ -316,7 +338,8 @@ class MainActivity : ComponentActivity() {
           Spacer(modifier = Modifier.height(16.dp))
           Text(
             text = "Hi community! I am open to new connections \"🙂\"",
-            fontSize = 16.sp, modifier = Modifier.padding(start = 5.dp)
+            fontSize = 16.sp, modifier = Modifier.padding(start = 5.dp),
+            color = Color.Black
           )
         }
       }
@@ -324,7 +347,10 @@ class MainActivity : ComponentActivity() {
         modifier = Modifier
             .size(88.dp)
             .offset(x = -10.dp, y = (10).dp)
-            .background(Color.Gray, RoundedCornerShape(10.dp)),
+            .background(
+                colorResource(id = R.color.no_profile_picture_background_color),
+                RoundedCornerShape(10.dp)
+            ),
         contentAlignment = Alignment.Center,
       ) {
         Text(
@@ -377,11 +403,13 @@ class MainActivity : ComponentActivity() {
         Icon(
           painter = paintDrawable,
           contentDescription = "Refine",
+          tint = Color.Black
         )
       }
       Spacer(modifier = Modifier.width(4.dp))
       Text(
-        text = text, style = MaterialTheme.typography.bodySmall
+        text = text, style = MaterialTheme.typography.bodySmall, color = Color.Black
+
       )
     }
   }
@@ -409,7 +437,7 @@ class MainActivity : ComponentActivity() {
       modifier = Modifier
           .fillMaxWidth()
           .padding(vertical = 0.dp),
-      containerColor = Color.Black,
+      containerColor = colorResource(id = R.color.pager_indicato_background_color),
       indicator = { tabPositions ->
         Box(
             Modifier
@@ -429,12 +457,13 @@ class MainActivity : ComponentActivity() {
             }
           },
           selectedContentColor = Color.White,
-          unselectedContentColor = Color.Gray
+          unselectedContentColor = colorResource(id = R.color.pager_indicato_text_color)
         )
       }
     }
   }
 
+  @OptIn(ExperimentalMaterial3Api::class)
   @Preview(showBackground = true)
   @Composable
   fun SearchBar(modifier: Modifier = Modifier) {
@@ -444,7 +473,6 @@ class MainActivity : ComponentActivity() {
     }
     Surface(
       modifier = Modifier
-
         .fillMaxWidth(), color = Color.White
     ) {
       Row(
@@ -458,6 +486,10 @@ class MainActivity : ComponentActivity() {
           onValueChange = {
             text = it
           },
+          colors = TextFieldDefaults.outlinedTextFieldColors(
+            unfocusedBorderColor = Color.Black,
+            focusedBorderColor = Color.Black
+          ),
           shape = shape,
           leadingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = null)
@@ -474,7 +506,7 @@ class MainActivity : ComponentActivity() {
               .fillMaxWidth()
               .height(44.dp)
               .padding(horizontal = 4.dp)
-              .weight(6f)
+              .weight(6f),
         )
 
         IconButton(
@@ -486,6 +518,7 @@ class MainActivity : ComponentActivity() {
           Icon(
             painter = painterResource(id = R.drawable.baseline_tune_24),
             contentDescription = "Refine",
+            tint = Color.Black
           )
         }
       }
@@ -528,5 +561,19 @@ class MainActivity : ComponentActivity() {
         )
       }
     }
+  }
+}
+
+@Preview
+@Composable
+fun FloatingActionBtn() {
+  FloatingActionButton(
+    onClick = { },
+    shape = CircleShape,
+  ) {
+    Icon(
+      imageVector = Icons.Default.Add, contentDescription = "Add",
+      tint = Color.Black
+    )
   }
 }

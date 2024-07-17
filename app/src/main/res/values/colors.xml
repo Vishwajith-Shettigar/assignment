@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="app_bar_background_color">#2d4861</color>
+    <color name="pager_indicato_background_color">#4b6780</color>
+    <color name="pager_indicato_text_color"> #bcc7d1</color>
+    <color name="no_profile_picture_background_color">#8cb1d1</color>
 </resources>
