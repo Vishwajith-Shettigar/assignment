@@ -49,15 +49,22 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -80,365 +87,492 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       NetclanExplorerTheme {
-        Scaffold { padding ->
-          Column(modifier = Modifier.padding(vertical = padding.calculateTopPadding())) {
-            TopAppBar()
-            ViewPagerPreview()
+
+
+        Scaffold(
+          bottomBar = {
+            BottomNavigation()
           }
+        ) { padding ->
+          Column(
+            modifier = Modifier
+              .padding(padding)
+              .fillMaxSize()
+          ) {
+            TopAppBar()
+            ViewPagerSample(
+              modifier = Modifier
+                .weight(1f)
+                .fillMaxSize()
+            )
+          }
+
         }
       }
     }
   }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun TopAppBar() {
-  TopAppBar(
-    modifier = Modifier.fillMaxWidth(),
-    backgroundColor = Color.Blue,
-    contentColor = Color.White,
-  ) {
-    Row(
-      modifier = Modifier
+  @Preview(showBackground = true)
+  @Composable
+  fun TopAppBar() {
+    TopAppBar(
+      modifier = Modifier.fillMaxWidth(),
+      backgroundColor = Color.Blue,
+      contentColor = Color.White,
+    ) {
+      Row(
+        modifier = Modifier
           .fillMaxWidth()
           .padding(bottom = 4.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.Start
-    ) {
-      // Left icon
-      IconButton(onClick = { }) {
-        Icon(
-          imageVector = Icons.Filled.Menu,
-          contentDescription = "Menu",
-          tint = Color.White,
-        )
-      }
-
-      // Middle texts
-      Column(
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(horizontal = 4.dp)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
       ) {
-        Text(
-          text = "Howdy Vishwajith Shettigar !!",
-          style = MaterialTheme.typography.headlineSmall.copy(fontSize = 15.sp),
-          color = Color.White
-        )
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // Left icon
+        IconButton(onClick = { }) {
           Icon(
-            imageVector = Icons.Filled.LocationOn,
+            imageVector = Icons.Filled.Menu,
             contentDescription = "Menu",
             tint = Color.White,
           )
+        }
+
+        // Middle texts
+        Column(
+          horizontalAlignment = Alignment.Start,
+          verticalArrangement = Arrangement.Center,
+          modifier = Modifier.padding(horizontal = 4.dp)
+        ) {
           Text(
-            text = "Trasi",
-            style = MaterialTheme.typography.bodySmall,
+            text = "Howdy Vishwajith Shettigar !!",
+            style = MaterialTheme.typography.headlineSmall.copy(fontSize = 15.sp),
+            color = Color.White
+          )
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+              imageVector = Icons.Filled.LocationOn,
+              contentDescription = "Menu",
+              tint = Color.White,
+            )
+            Text(
+              text = "Trasi",
+              style = MaterialTheme.typography.bodySmall,
+              color = Color.White
+            )
+          }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Right icon
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          IconButton(
+            onClick = { },
+            modifier = Modifier.size(29.dp)
+          ) {
+            Icon(
+              imageVector = Icons.Default.Check,
+              contentDescription = "Refine",
+              tint = Color.White
+            )
+          }
+          Text(
+            text = "Refine", style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
             color = Color.White
           )
         }
+
       }
+    }
+  }
 
-      Spacer(modifier = Modifier.weight(1f))
+  @Composable
+  fun ViewPagerPreview() {
+    ViewPagerSample()
+  }
 
-      // Right icon
-      Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        IconButton(
-          onClick = { },
-          modifier = Modifier.size(29.dp)
-        ) {
-          Icon(
-            imageVector = Icons.Default.Check,
-            contentDescription = "Refine",
-            tint = Color.White
-          )
+  @OptIn(ExperimentalFoundationApi::class)
+  @Composable
+  fun ViewPagerSample(modifier: Modifier = Modifier) {
+    val pagerState = rememberPagerState(
+      pageCount = { 3 }
+    )
+    Box(modifier = modifier) {
+//
+
+      Column() {
+        // Page Indicator
+        PagerIndicator(pagerState)
+        HorizontalPager(
+          state = pagerState,
+          modifier = Modifier
+            .weight(1f)
+            .background(Color.Cyan)
+        ) { page ->
+          Column(modifier = Modifier.fillMaxSize()) {
+            SearchBar()
+            ShowUserProfileList()
+          }
         }
-        Text(
-          text = "Refine", style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
-          color = Color.White
-        )
-      }
-
-    }
-  }
-}
-
-@Composable
-fun ViewPagerPreview() {
-  ViewPagerSample()
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ViewPagerSample() {
-  val pagerState = rememberPagerState(
-    pageCount = { 3 }
-  )
-  Column {
-    // Page Indicator
-    PagerIndicator(pagerState)
-    HorizontalPager(
-      state = pagerState,
-      modifier = Modifier
-          .weight(1f)
-          .background(Color.Cyan)
-    ) { page ->
-      Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar()
-        ShowUserProfileList()
       }
     }
   }
-}
 
-@Composable
-fun ShowUserProfileList() {
-  LazyColumn() {
-    items(3) {
-      ProfileCard()
-      Spacer(modifier = Modifier.height(10.dp))
+  @Composable
+  fun ShowUserProfileList() {
+    LazyColumn() {
+      items(3) {
+        ProfileCard()
+        Spacer(modifier = Modifier.height(10.dp))
+      }
     }
   }
-}
 
-@Composable
-fun ProfileCard() {
-  Box(
-    modifier = Modifier.padding(start = 15.dp, end = 10.dp)
-  ) {
-    Card(
-      modifier = Modifier
+  @Composable
+  fun ProfileCard() {
+    Box(
+      modifier = Modifier.padding(start = 15.dp, end = 10.dp)
+    ) {
+      Card(
+        modifier = Modifier
           .fillMaxWidth()
           .padding(top = 24.dp, start = 25.dp),
-      elevation = 4.dp
-    ) {
-      Column(
-        modifier = Modifier
-          .padding(16.dp)
+        elevation = 4.dp
       ) {
-        Row(
-          verticalAlignment = Alignment.Top,
-          horizontalArrangement = Arrangement.SpaceBetween,
-          modifier = Modifier.fillMaxWidth()
+        Column(
+          modifier = Modifier
+            .padding(16.dp)
         ) {
-          Spacer(modifier = Modifier.width(44.dp))
-          Column {
+          Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Spacer(modifier = Modifier.width(44.dp))
+            Column {
+              Text(
+                text = "Nikshith Poojary",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+              )
+              Text(
+                text = "Udupi | IT",
+                color = Color.Gray
+              )
+              Text(
+                text = "Within 7.7 KM",
+                color = Color.Gray
+              )
+            }
+            Spacer(modifier = Modifier.weight(1f))
             Text(
-              text = "Nikshith Poojary",
-              fontWeight = FontWeight.Bold,
-              fontSize = 18.sp
-            )
-            Text(
-              text = "Udupi | IT",
-              color = Color.Gray
-            )
-            Text(
-              text = "Within 7.7 KM",
-              color = Color.Gray
+              text = "+ INVITE",
+              color = Color.Blue,
+              fontWeight = FontWeight.Bold
             )
           }
-          Spacer(modifier = Modifier.weight(1f))
-          Text(
-            text = "+ INVITE",
-            color = Color.Blue,
-            fontWeight = FontWeight.Bold
-          )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.Start
-        ) {
-          Spacer(modifier = Modifier.width(44.dp))
-          LinearProgressIndicator(
-            progress = 0.18f,
-            color = Color(0xFF6200EE),
-            backgroundColor = Color(0xFFBB86FC),
-            modifier = Modifier.width(80.dp)
-          )
-          Text(
-            text = "Profile Score - 18%",
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 10.dp),
-            style = MaterialTheme.typography.bodySmall
-          )
-        }
+          Spacer(modifier = Modifier.height(16.dp))
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+          ) {
+            Spacer(modifier = Modifier.width(44.dp))
+            LinearProgressIndicator(
+              progress = 0.18f,
+              color = Color(0xFF6200EE),
+              backgroundColor = Color(0xFFBB86FC),
+              modifier = Modifier.width(80.dp)
+            )
+            Text(
+              text = "Profile Score - 18%",
+              color = Color.Gray,
+              textAlign = TextAlign.Center,
+              modifier = Modifier.padding(horizontal = 10.dp),
+              style = MaterialTheme.typography.bodySmall
+            )
+          }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-          horizontalArrangement = Arrangement.Start,
-          verticalAlignment = Alignment.CenterVertically,
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          TextWithIcon(text = "Coffee")
-          VerticalDivider()
-          TextWithIcon(text = "Business")
-          VerticalDivider()
-          TextWithIcon(text = "Friendship")
+          Spacer(modifier = Modifier.height(16.dp))
+          Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            TextWithIcon(text = "Coffee")
+            VerticalDivider()
+            TextWithIcon(text = "Business")
+            VerticalDivider()
+            TextWithIcon(text = "Friendship")
+          }
+          Spacer(modifier = Modifier.height(16.dp))
+          Text(
+            text = "Hi community! I am open to new connections \"🙂\"",
+            fontSize = 16.sp, modifier = Modifier.padding(start = 5.dp)
+          )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+      }
+      Box(
+        modifier = Modifier
+          .size(88.dp)
+          .offset(x = -10.dp, y = (10).dp)
+          .background(Color.Gray, RoundedCornerShape(10.dp)),
+        contentAlignment = Alignment.Center,
+      ) {
         Text(
-          text = "Hi community! I am open to new connections \"🙂\"",
-          fontSize = 16.sp, modifier = Modifier.padding(start = 5.dp)
+          text = "NP",
+          color = Color.Black,
+          fontSize = 24.sp,
+          fontWeight = FontWeight.Bold
         )
       }
     }
+  }
+
+  @Composable
+  fun VerticalDivider() {
     Box(
       modifier = Modifier
-          .size(78.dp)
-          .offset(x = -10.dp, y = (10).dp)
-          .background(Color.Gray, RoundedCornerShape(6.dp)),
-      contentAlignment = Alignment.Center,
-    ) {
-      Text(
-        text = "NP",
-        color = Color.Black,
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold
-      )
-    }
-  }
-}
-
-@Composable
-fun VerticalDivider() {
-  Box(
-    modifier = Modifier
-        .height(14.dp)
-        .width(1.dp)
-        .background(Color.Gray)
-  )
-}
-
-@Composable
-fun TextWithIcon(text: String) {
-  Row(
-    verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.padding(end = 5.dp, start = 5.dp)
-  ) {
-    IconButton(
-      onClick = { },
-      modifier = Modifier
-        .size(10.dp)
-    ) {
-      Icon(
-        imageVector = Icons.Default.ShoppingCart,
-        contentDescription = "Refine",
-      )
-    }
-    Spacer(modifier = Modifier.width(4.dp))
-    Text(
-      text = text, style = MaterialTheme.typography.bodySmall
+          .height(14.dp)
+          .width(1.dp)
+          .background(Color.Gray)
     )
   }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun ProfileCardPreview() {
-  ProfileCard()
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true)
-@Composable
-fun PagerIndicator(
-  pagerState: PagerState = rememberPagerState(
-    pageCount = { 3 }
-  )
-) {
-  val coroutineScope = rememberCoroutineScope()
-  val tabTitles = listOf("PerSonal", "Services", "Businesses")
-  val context = LocalContext.current
-
-  TabRow(
-    selectedTabIndex = pagerState.currentPage,
-    modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 0.dp),
-    containerColor = Color.Black,
-    indicator = { tabPositions ->
-      Box(
-          Modifier
-              .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-              .height(3.dp)
-              .background(Color.White)
-      )
-    }
-  ) {
-    tabTitles.forEachIndexed { index, title ->
-      Tab(
-        text = { Text(title) },
-        selected = pagerState.currentPage == index,
-        onClick = {
-          Toast.makeText(context, "Clicked!", Toast.LENGTH_SHORT).show()
-          coroutineScope.launch {
-            pagerState.animateScrollToPage(index)
-          }
-        },
-        selectedContentColor = Color.White,
-        unselectedContentColor = Color.Gray
-      )
-    }
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchBar(modifier: Modifier = Modifier) {
-  val shape = RoundedCornerShape(10.dp)
-  var text by rememberSaveable {
-    mutableStateOf("")
-  }
-  Surface(
-    modifier = Modifier
-        .height(80.dp)
-        .fillMaxWidth(), color = Color.White
-  ) {
+  @Composable
+  fun TextWithIcon(text: String) {
     Row(
-      modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 10.dp),
-      verticalAlignment = Alignment.CenterVertically
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier.padding(end = 5.dp, start = 5.dp)
     ) {
-      OutlinedTextField(
-        value = text,
-        onValueChange = {
-          text = it
-        },
-        shape = shape,
-        leadingIcon = {
-          Icon(imageVector = Icons.Default.Search, contentDescription = null)
-        },
-        placeholder = {
-          Text(
-            "Search",
-            color = Color.Gray,
-            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
-          )
-        },
-        textStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(44.dp)
-            .padding(horizontal = 4.dp)
-            .weight(6f)
-      )
-
       IconButton(
         onClick = { },
         modifier = Modifier
-            .size(29.dp)
-            .weight(1f)
+          .size(10.dp)
       ) {
         Icon(
-          imageVector = Icons.Default.Menu,
+          imageVector = Icons.Default.ShoppingCart,
           contentDescription = "Refine",
+        )
+      }
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(
+        text = text, style = MaterialTheme.typography.bodySmall
+      )
+    }
+  }
+
+  @Preview(showBackground = true)
+  @Composable
+  fun ProfileCardPreview() {
+    ProfileCard()
+  }
+
+  @OptIn(ExperimentalFoundationApi::class)
+  @Preview(showBackground = true)
+  @Composable
+  fun PagerIndicator(
+    pagerState: PagerState = rememberPagerState(
+      pageCount = { 3 }
+    )
+  ) {
+    val coroutineScope = rememberCoroutineScope()
+    val tabTitles = listOf("PerSonal", "Services", "Businesses")
+    val context = LocalContext.current
+
+    TabRow(
+      selectedTabIndex = pagerState.currentPage,
+      modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 0.dp),
+      containerColor = Color.Black,
+      indicator = { tabPositions ->
+        Box(
+            Modifier
+                .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                .height(3.dp)
+                .background(Color.White)
+        )
+      }
+    ) {
+      tabTitles.forEachIndexed { index, title ->
+        Tab(
+          text = { Text(title) },
+          selected = pagerState.currentPage == index,
+          onClick = {
+            Toast.makeText(context, "Clicked!", Toast.LENGTH_SHORT).show()
+            coroutineScope.launch {
+              pagerState.animateScrollToPage(index)
+            }
+          },
+          selectedContentColor = Color.White,
+          unselectedContentColor = Color.Gray
         )
       }
     }
   }
-}
+
+  @Preview(showBackground = true)
+  @Composable
+  fun SearchBar(modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(10.dp)
+    var text by rememberSaveable {
+      mutableStateOf("")
+    }
+    Surface(
+      modifier = Modifier
+          .height(80.dp)
+          .fillMaxWidth(), color = Color.White
+    ) {
+      Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        OutlinedTextField(
+          value = text,
+          onValueChange = {
+            text = it
+          },
+          shape = shape,
+          leadingIcon = {
+            Icon(imageVector = Icons.Default.Search, contentDescription = null)
+          },
+          placeholder = {
+            Text(
+              "Search",
+              color = Color.Gray,
+              style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp)
+            )
+          },
+          textStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+          modifier = modifier
+              .fillMaxWidth()
+              .height(44.dp)
+              .padding(horizontal = 4.dp)
+              .weight(6f)
+        )
+
+        IconButton(
+          onClick = { },
+          modifier = Modifier
+              .size(29.dp)
+              .weight(1f)
+        ) {
+          Icon(
+            imageVector = Icons.Default.Menu,
+            contentDescription = "Refine",
+          )
+        }
+      }
+    }
+  }
+
+  @Preview
+  @Composable
+  fun BottomNavigation(modifier: Modifier = Modifier) {
+    NavigationBar(
+modifier=Modifier.height(100.dp), containerColor = Color.White
+    ) {
+      NavigationBarItem(
+        icon = {
+          Icon(
+            imageVector = Icons.Filled.Home,
+            contentDescription = null,
+          )
+        },
+        label = {
+          Text("Explore")
+        },
+        selected = true,
+        onClick = {},
+        colors = NavigationBarItemDefaults.colors(
+          selectedIconColor = Color.Black,
+          selectedTextColor = Color.Black,
+          unselectedIconColor = Color.Gray,
+          unselectedTextColor = Color.Gray,
+          indicatorColor = Color.Transparent
+        )
+      )
+      NavigationBarItem(
+        icon = {
+          Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = null
+          )
+        },
+        label = {
+          Text("Connect..")
+        },
+        selected = false,
+        onClick = {},
+        colors = NavigationBarItemDefaults.colors(
+          selectedIconColor = Color.Black,
+          selectedTextColor = Color.Black,
+          unselectedIconColor = Color.Gray,
+          unselectedTextColor = Color.Gray,
+          indicatorColor = Color.Transparent
+        )
+      )
+      NavigationBarItem(
+        icon = {
+          Icon(
+            imageVector = Icons.Filled.Call,
+            contentDescription = null
+          )
+        },
+        label = {
+          Text("Chat")
+        },
+        selected = false,
+        onClick = {},
+        colors = NavigationBarItemDefaults.colors(
+          selectedIconColor = Color.Black,
+          selectedTextColor = Color.Black,
+          unselectedIconColor = Color.Gray,
+          unselectedTextColor = Color.Gray,
+          indicatorColor = Color.Transparent
+        )
+      )
+      NavigationBarItem(
+        icon = {
+          Icon(
+            imageVector = Icons.Default.AccountBox,
+            contentDescription = null
+          )
+        },
+        label = {
+          Text("Contacts")
+        },
+        selected = false,
+        onClick = {},
+        colors = NavigationBarItemDefaults.colors(
+          selectedIconColor = Color.Black,
+          selectedTextColor = Color.Black,
+          unselectedIconColor = Color.Gray,
+          unselectedTextColor = Color.Gray,
+          indicatorColor = Color.Transparent
+        )
+      )
+      NavigationBarItem(
+        icon = {
+          Icon(
+            imageVector = Icons.Default.Face,
+            contentDescription = null
+          )
+        },
+        label = {
+          Text("Groups")
+        },
+        selected = false,
+        onClick = {},
+        colors = NavigationBarItemDefaults.colors(
+          selectedIconColor = Color.Black,
+          selectedTextColor = Color.Black,
+          unselectedIconColor = Color.Gray,
+          unselectedTextColor = Color.Gray,
+          indicatorColor = Color.Transparent
+        )
+      )
+    }
+  }}
