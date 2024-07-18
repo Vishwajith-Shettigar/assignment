@@ -2,7 +2,6 @@ package com.example.netclanexplorer.ui.theme.homepage
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.model.Dummydata
@@ -24,7 +23,7 @@ class HomeViewModel : ViewModel() {
   }
 
   private suspend fun getDummyData() {
-    delay(2000)
+    delay(3000)
     _dummyDataList.value = (dummyData)
   }
 }

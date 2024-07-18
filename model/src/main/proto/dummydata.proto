@@ -8,12 +8,12 @@ option java_multiple_files = true;
 message Dummydata{
   int32 id = 1;
   string full_name = 2;
-  string image_url = 3;
+  int32 image_url = 3; // Storing drawable resource.
   string place_and_occupation = 4;
   string message = 5;
   float distance = 6;
   HobbyList hobby_list = 7;
-  int32 profile_score=8;
+  int32 profile_score = 8;
 }
 
 message HobbyList{

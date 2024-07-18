@@ -74,5 +74,7 @@ dependencies {
   debugImplementation(libs.androidx.ui.test.manifest)
 
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+  implementation("io.coil-kt:coil-compose:2.1.0")
+
 
 }

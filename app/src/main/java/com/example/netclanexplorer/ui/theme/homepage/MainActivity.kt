@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -63,15 +64,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.sp
 import androidx.core.widget.ContentLoadingProgressBar
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
 import com.example.model.Dummydata
 import com.example.netclanexplorer.R
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
 
@@ -213,7 +223,11 @@ class MainActivity : ComponentActivity() {
               .weight(1f)
               .background(Color.White)
         ) { page ->
-          Column(modifier = Modifier.fillMaxSize()) {
+          Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+          ) {
 
             val rememberedDummyDataList = rememberSaveable {
               viewModel.dummydataList
@@ -342,21 +356,41 @@ class MainActivity : ComponentActivity() {
           )
         }
       }
-      Box(
-        modifier = Modifier
-            .size(88.dp)
-            .offset(x = -10.dp, y = (10).dp)
-            .background(
-                colorResource(id = R.color.no_profile_picture_background_color),
-                RoundedCornerShape(10.dp)
-            ),
-        contentAlignment = Alignment.Center,
-      ) {
+      ProfilePictureBox(dummydata = dummydata)
+    }
+  }
+
+  @Composable
+  fun ProfilePictureBox(dummydata: Dummydata) {
+    Box(
+      modifier = Modifier
+          .size(88.dp)
+          .offset(x = (-10).dp, y = 10.dp)
+          .background(
+              color = colorResource(id = R.color.no_profile_picture_background_color),
+              shape = RoundedCornerShape(10.dp)
+          ),
+      contentAlignment = Alignment.Center,
+    ) {
+      if (dummydata.imageUrl == 0) {
         Text(
-          text = "NP",
+          text = dummydata.fullName[0] + dummydata.fullName[dummydata.fullName.length - 1].toString()
+            .toUpperCase(),
           color = Color.Black,
           fontSize = 24.sp,
           fontWeight = FontWeight.Bold
+        )
+      } else {
+        Image(
+          painter = painterResource(
+            dummydata.imageUrl
+
+          ),
+          contentDescription = "Profile picture",
+          modifier = Modifier
+              .fillMaxSize()
+              .clip(RoundedCornerShape(10.dp)),
+          contentScale = ContentScale.Crop
         )
       }
     }
@@ -566,10 +600,11 @@ fun FloatingActionBtn() {
   FloatingActionButton(
     onClick = { },
     shape = CircleShape,
+    containerColor = colorResource(id = R.color.floating_action_btn_background_color)
   ) {
     Icon(
       imageVector = Icons.Default.Add, contentDescription = "Add",
-      tint = Color.Black
+      tint = Color.White
     )
   }
 }
