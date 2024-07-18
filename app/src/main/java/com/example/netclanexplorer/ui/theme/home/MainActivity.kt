@@ -245,7 +245,9 @@ class MainActivity : ComponentActivity() {
   @Preview
   @Composable
   fun showLoading() {
-    CircularProgressIndicator()
+    CircularProgressIndicator(
+      color = colorResource(id = R.color.app_bar_background_color)
+    )
   }
 
   @Composable

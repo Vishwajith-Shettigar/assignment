@@ -110,7 +110,7 @@ class RefineActivity : ComponentActivity() {
         onValueChange = { status = it },
         modifier = Modifier
           .fillMaxWidth()
-          .background(MaterialTheme.colors.surface, shape = MaterialTheme.shapes.small)
+          .background(Color.White, shape = MaterialTheme.shapes.small)
           .padding(5.dp),
         singleLine = false,
         maxLines = 5,
