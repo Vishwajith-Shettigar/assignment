@@ -1,4 +1,4 @@
-package com.example.netclanexplorer.ui.theme.homepage
+package com.example.netclanexplorer.ui.theme.home
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
