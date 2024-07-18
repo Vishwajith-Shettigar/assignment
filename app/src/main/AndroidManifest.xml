@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NetclanExplorer"
         tools:targetApi="31">
+        <activity android:name=".ui.theme.refine.RefineActivity"/>
         <activity
-            android:name=".ui.theme.refine.RefineActivity"
+            android:name=".ui.theme.home.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.NetclanExplorer">

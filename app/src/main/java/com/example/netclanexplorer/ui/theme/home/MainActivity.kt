@@ -1,5 +1,6 @@
 package com.example.netclanexplorer.ui.theme.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -70,6 +71,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.model.Dummydata
 import com.example.netclanexplorer.R
+import com.example.netclanexplorer.ui.theme.refine.RefineActivity
 
 class MainActivity : ComponentActivity() {
 
@@ -105,14 +107,14 @@ class MainActivity : ComponentActivity() {
         ) { padding ->
           Column(
             modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
+              .padding(padding)
+              .fillMaxSize()
           ) {
             TopAppBar()
             ViewPagerSample(
               modifier = Modifier
-                  .weight(1f)
-                  .fillMaxSize(),
+                .weight(1f)
+                .fillMaxSize(),
               listState
             )
           }
@@ -120,6 +122,11 @@ class MainActivity : ComponentActivity() {
         }
       }
     }
+  }
+
+
+  private fun RouteToRefineScreen() {
+    startActivity(Intent(this, RefineActivity::class.java))
   }
 
   @Preview(showBackground = true)
@@ -132,8 +139,8 @@ class MainActivity : ComponentActivity() {
     ) {
       Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 4.dp),
+          .fillMaxWidth()
+          .padding(bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
       ) {
@@ -176,7 +183,7 @@ class MainActivity : ComponentActivity() {
         // Right icon
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           IconButton(
-            onClick = { },
+            onClick = { RouteToRefineScreen() },
             modifier = Modifier.size(29.dp)
           ) {
             Icon(
@@ -208,8 +215,8 @@ class MainActivity : ComponentActivity() {
         HorizontalPager(
           state = pagerState,
           modifier = Modifier
-              .weight(1f)
-              .background(Color.White)
+            .weight(1f)
+            .background(Color.White)
         ) { page ->
           Column(
             modifier = Modifier.fillMaxSize(),
@@ -217,10 +224,9 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally
           ) {
 
-            val rememberedDummyDataList = rememberSaveable {
+            val rememberedDummyDataList = remember {
               viewModel.dummydataList
             }
-
             if (rememberedDummyDataList.value.isEmpty()) {
               showLoading()
             } else {
@@ -262,10 +268,10 @@ class MainActivity : ComponentActivity() {
     ) {
       Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(top = 24.dp, start = 25.dp)
-            .border(1.dp, Color.LightGray, shape = RoundedCornerShape(10.dp))
+          .fillMaxWidth()
+          .background(Color.White)
+          .padding(top = 24.dp, start = 25.dp)
+          .border(1.dp, Color.LightGray, shape = RoundedCornerShape(10.dp))
       ) {
         Column(
           modifier = Modifier
@@ -311,9 +317,9 @@ class MainActivity : ComponentActivity() {
               progress = dummydata.profileScore.toFloat() / 100,
               color = Color.Gray,
               modifier = Modifier
-                  .width(80.dp)
-                  .height(5.dp)
-                  .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
+                .width(80.dp)
+                .height(5.dp)
+                .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
             )
             Text(
               text = "Profile Score - ${dummydata.profileScore}%",
@@ -352,12 +358,12 @@ class MainActivity : ComponentActivity() {
   fun ProfilePictureBox(dummydata: Dummydata) {
     Box(
       modifier = Modifier
-          .size(88.dp)
-          .offset(x = (-10).dp, y = 10.dp)
-          .background(
-              color = colorResource(id = R.color.no_profile_picture_background_color),
-              shape = RoundedCornerShape(10.dp)
-          ),
+        .size(88.dp)
+        .offset(x = (-10).dp, y = 10.dp)
+        .background(
+          color = colorResource(id = R.color.no_profile_picture_background_color),
+          shape = RoundedCornerShape(10.dp)
+        ),
       contentAlignment = Alignment.Center,
     ) {
       if (dummydata.imageUrl == 0) {
@@ -376,8 +382,8 @@ class MainActivity : ComponentActivity() {
           ),
           contentDescription = "Profile picture",
           modifier = Modifier
-              .fillMaxSize()
-              .clip(RoundedCornerShape(10.dp)),
+            .fillMaxSize()
+            .clip(RoundedCornerShape(10.dp)),
           contentScale = ContentScale.Crop
         )
       }
@@ -388,9 +394,9 @@ class MainActivity : ComponentActivity() {
   fun VerticalDivider() {
     Box(
       modifier = Modifier
-          .height(14.dp)
-          .width(1.dp)
-          .background(Color.Gray)
+        .height(14.dp)
+        .width(1.dp)
+        .background(Color.Gray)
     )
   }
 
@@ -449,15 +455,15 @@ class MainActivity : ComponentActivity() {
     TabRow(
       selectedTabIndex = pagerState.currentPage,
       modifier = Modifier
-          .fillMaxWidth()
-          .padding(vertical = 0.dp),
+        .fillMaxWidth()
+        .padding(vertical = 0.dp),
       containerColor = colorResource(id = R.color.pager_indicato_background_color),
       indicator = { tabPositions ->
         Box(
-            Modifier
-                .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                .height(3.dp)
-                .background(Color.White)
+          Modifier
+            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+            .height(3.dp)
+            .background(Color.White)
         )
       }
     ) {
@@ -491,8 +497,8 @@ class MainActivity : ComponentActivity() {
     ) {
       Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 3.dp),
+          .fillMaxWidth()
+          .padding(start = 5.dp, end = 5.dp, top = 20.dp, bottom = 3.dp),
         verticalAlignment = Alignment.CenterVertically
       ) {
         OutlinedTextField(
@@ -520,17 +526,17 @@ class MainActivity : ComponentActivity() {
           },
           textStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
           modifier = modifier
-              .fillMaxWidth()
-              .height(44.dp)
-              .padding(horizontal = 4.dp)
-              .weight(6f),
+            .fillMaxWidth()
+            .height(44.dp)
+            .padding(horizontal = 4.dp)
+            .weight(6f),
         )
 
         IconButton(
           onClick = { },
           modifier = Modifier
-              .size(29.dp)
-              .weight(1f)
+            .size(29.dp)
+            .weight(1f)
         ) {
           Icon(
             painter = painterResource(id = R.drawable.baseline_tune_24),
