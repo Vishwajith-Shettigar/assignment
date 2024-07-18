@@ -23,7 +23,7 @@ class HomeViewModel : ViewModel() {
   }
 
   private suspend fun getDummyData() {
-    delay(3000)
+    delay(1000)
     _dummyDataList.value = (dummyData)
   }
 }

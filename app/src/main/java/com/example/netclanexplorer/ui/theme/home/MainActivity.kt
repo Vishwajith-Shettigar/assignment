@@ -124,7 +124,6 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-
   private fun RouteToRefineScreen() {
     startActivity(Intent(this, RefineActivity::class.java))
   }
@@ -230,9 +229,9 @@ class MainActivity : ComponentActivity() {
             if (rememberedDummyDataList.value.isEmpty()) {
               showLoading()
             } else {
-              SearchBar()
               when (page) {
                 0 -> {
+                  SearchBar()
                   ShowUserProfileList(listState, rememberedDummyDataList.value)
                 }
               }
@@ -450,7 +449,7 @@ class MainActivity : ComponentActivity() {
     )
   ) {
     val coroutineScope = rememberCoroutineScope()
-    val tabTitles = listOf("PerSonal", "Services", "Businesses")
+    val tabTitles = listOf("Personal", "Services", "Businesses")
 
     TabRow(
       selectedTabIndex = pagerState.currentPage,
