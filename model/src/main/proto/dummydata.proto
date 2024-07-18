@@ -13,6 +13,7 @@ message Dummydata{
   string message = 5;
   float distance = 6;
   HobbyList hobby_list = 7;
+  int32 profile_score=8;
 }
 
 message HobbyList{

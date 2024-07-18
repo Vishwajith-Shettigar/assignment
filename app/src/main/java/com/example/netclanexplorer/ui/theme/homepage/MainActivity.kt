@@ -1,6 +1,8 @@
 package com.example.netclanexplorer.ui.theme.homepage
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -39,7 +41,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -65,12 +69,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.core.widget.ContentLoadingProgressBar
+import com.example.model.Dummydata
 import com.example.netclanexplorer.R
 
 class MainActivity : ComponentActivity() {
 
+  private lateinit var viewModel: HomeViewModel
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    viewModel = HomeViewModel()
+
     enableEdgeToEdge()
     setContent {
       NetclanExplorerTheme {
@@ -204,10 +214,19 @@ class MainActivity : ComponentActivity() {
               .background(Color.White)
         ) { page ->
           Column(modifier = Modifier.fillMaxSize()) {
-            SearchBar()
-            when (page) {
-              0 -> {
-                ShowUserProfileList(listState)
+
+            val rememberedDummyDataList = rememberSaveable {
+              viewModel.dummydataList
+            }
+
+            if (rememberedDummyDataList.value.isEmpty()) {
+              showLoading()
+            } else {
+              SearchBar()
+              when (page) {
+                0 -> {
+                  ShowUserProfileList(listState, rememberedDummyDataList.value)
+                }
               }
             }
           }
@@ -216,20 +235,26 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  @Preview
   @Composable
-  fun ShowUserProfileList(listState: LazyListState) {
+  fun showLoading() {
+    CircularProgressIndicator()
+  }
+
+  @Composable
+  fun ShowUserProfileList(listState: LazyListState, dummydata: MutableList<Dummydata>) {
     LazyColumn(
       state = listState
     ) {
-      items(3) {
-        ProfileCard()
+      items(dummydata.size) { index ->
+        ProfileCard(dummydata.get(index))
         Spacer(modifier = Modifier.height(10.dp))
       }
     }
   }
 
   @Composable
-  fun ProfileCard() {
+  fun ProfileCard(dummydata: Dummydata) {
     Box(
       modifier = Modifier.padding(start = 15.dp, end = 10.dp)
     ) {
@@ -252,17 +277,17 @@ class MainActivity : ComponentActivity() {
             Spacer(modifier = Modifier.width(44.dp))
             Column {
               Text(
-                text = "Nikshith Poojary",
+                text = dummydata.fullName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = Color.Black
               )
               Text(
-                text = "Udupi | IT",
+                text = dummydata.placeAndOccupation,
                 color = Color.Gray
               )
               Text(
-                text = "Within 7.7 KM",
+                text = "Within ${dummydata.distance} KM",
                 color = Color.Gray
               )
             }
@@ -281,7 +306,7 @@ class MainActivity : ComponentActivity() {
           ) {
             Spacer(modifier = Modifier.width(44.dp))
             LinearProgressIndicator(
-              progress = 0.18f,
+              progress = dummydata.profileScore.toFloat() / 100,
               color = Color.Gray,
               modifier = Modifier
                   .width(80.dp)
@@ -289,7 +314,7 @@ class MainActivity : ComponentActivity() {
                   .background(Color.LightGray, shape = RoundedCornerShape(10.dp)),
             )
             Text(
-              text = "Profile Score - 18%",
+              text = "Profile Score - ${dummydata.profileScore}%",
               color = Color.Gray,
               textAlign = TextAlign.Center,
               modifier = Modifier.padding(horizontal = 10.dp),
@@ -303,11 +328,11 @@ class MainActivity : ComponentActivity() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
           ) {
-            TextWithIcon(text = "Coffee", 0)
-            VerticalDivider()
-            TextWithIcon(text = "Business", 1)
-            VerticalDivider()
-            TextWithIcon(text = "Friendship", 2)
+            dummydata.hobbyList.hobyList.mapIndexed { index, text ->
+              TextWithIcon(text = text, index)
+              if (index != dummydata.hobbyList.hobyList.size - 1)
+                VerticalDivider()
+            }
           }
           Spacer(modifier = Modifier.height(16.dp))
           Text(
@@ -388,12 +413,6 @@ class MainActivity : ComponentActivity() {
     }
   }
 
-  @Preview(showBackground = true)
-  @Composable
-  fun ProfileCardPreview() {
-    ProfileCard()
-  }
-
   @OptIn(ExperimentalFoundationApi::class)
   @Preview(showBackground = true)
   @Composable
@@ -465,8 +484,10 @@ class MainActivity : ComponentActivity() {
           ),
           shape = shape,
           leadingIcon = {
-            Icon(imageVector = Icons.Default.Search, contentDescription = null,
-              tint = Color.Black)
+            Icon(
+              imageVector = Icons.Default.Search, contentDescription = null,
+              tint = Color.Black
+            )
           },
           placeholder = {
             Text(
